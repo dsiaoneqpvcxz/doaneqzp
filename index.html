@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PhysVerse: deformable simulation-ready 4D world modeling from monocular videos.">
+  <meta name="theme-color" content="#14352c">
+  <title>PhysVerse</title>
+  <link rel="icon" href="static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="static/css/site.css">
+  <script src="static/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hero" id="top">
+  <p class="eyebrow">Anonymous submission</p>
+  <h1>PhysVerse</h1>
+  <p class="subtitle">Deformable Simulation-Ready 4D World Modeling<br>from Monocular Videos</p>
+  <p class="authors">Anonymous authors</p>
+  <div class="actions" aria-label="Project resources">
+    <a class="button" href="#overview">Overview</a>
+    <span class="button unavailable">Paper <small>Coming soon</small></span>
+    <span class="button unavailable">Code <small>Coming soon</small></span>
+  </div>
+</header>
+<nav class="nav" aria-label="Sections">
+  <div class="nav-inner">
+    <a class="wordmark" href="#top">PhysVerse</a>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#materials">Materials</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#generation">Generation</a>
+    </div>
+  </div>
+</nav>
+<main id="main">
+  <section class="container lead-section" id="overview">
+    <p class="kicker">Overview</p>
+    <h2>A scene state a soft-body simulator can advance.</h2>
+    <p class="lead">World models predict future observations, but the state they keep is usually geometric and visual. Soft-body simulation also needs spatially varying material parameters. PhysVerse reconstructs that state from monocular video and uses it for both future video prediction and MPM initialization.</p>
+    <div class="cards">
+      <article>
+        <span>01</span>
+        <h3>Shared 4D state</h3>
+        <p>Depth, dynamic Gaussian primitives, and dense maps of Young's modulus, Poisson's ratio, and density.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>Feed-forward materials</h3>
+        <p>A Physics head predicts <em>E</em>, <em>ν</em>, and <em>ρ</em> in one pass, together with the reconstructed geometry.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>Conditioned generation</h3>
+        <p>The same depth and material maps condition a frozen video diffusion model for future frames.</p>
+      </article>
+    </div>
+    <figure>
+      <img src="static/images/taser_v2.png" alt="Comparison of scene reconstruction, video world models, and a simulation-ready world model that keeps depth, material maps, generation, and deformable simulation in one scene state.">
+      <figcaption>PhysVerse keeps reconstruction, future video prediction, dense material maps, and deformable simulation on one scene state.</figcaption>
+    </figure>
+  </section>
+
+  <section class="band" id="method">
+    <div class="container">
+      <p class="kicker">Method</p>
+      <h2>Reconstruct once. Predict and simulate from the same state.</h2>
+      <p class="section-copy">Given monocular video, a frozen reconstruction backbone and a Physics head produce geometry and dense material maps. Depth and material maps condition future video prediction. Geometry and materials initialize MPM particles. Generated frames can be passed back through the reconstructor to update the state.</p>
+      <figure>
+        <img src="static/images/overview_v4.png" alt="PhysVerse method overview: feed-forward reconstruction of Gaussians, depth, and material maps, a control branch for video generation, and MPM simulation.">
+        <figcaption>Method overview. The reconstructed scene state conditions video generation and initializes deformable simulation.</figcaption>
+      </figure>
+      <div class="steps">
+        <article>
+          <span>01</span>
+          <h3>Material prediction</h3>
+          <p>Semantic regions are assigned category-level reference values of <em>E</em>, <em>ν</em>, and <em>ρ</em>. The categories cover rigid materials, such as metal instruments, and deformable materials, such as soft tissue.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Conditioned generation</h3>
+          <p>A lightweight control branch injects the predicted depth and material latents into a frozen video diffusion backbone.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Simulation interface</h3>
+          <p>The same geometry and material maps are assigned to particles for MPM. This page does not show an MPM rollout on generated future frames.</p>
+        </article>
+      </div>
+      <figure>
+        <img src="static/images/dataset_v2.png" alt="Dataset curation: detection, semantic masks, and category-level maps of Young's modulus, Poisson's ratio, and density.">
+        <figcaption>Material supervision is built by assigning a category-level triplet to semantic regions.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="container" id="materials">
+    <p class="kicker">Material maps</p>
+    <h2>Boundaries stay with the objects.</h2>
+    <p class="section-copy">Predicted maps remain aligned with moving objects. In surgical sequences, metal instruments receive higher Young's modulus and density, and lower Poisson's ratio, than surrounding soft tissue. Gallbladder and fat receive lower Young's modulus than muscle, following the category-level reference values. The same spatial alignment appears in robotic cloth manipulation.</p>
+    <figure>
+      <img src="static/images/material_head_time_v2.png" alt="Predicted Young's modulus, Poisson's ratio, and density over time for a surgical scene and a robotic cloth scene.">
+      <figcaption>Qualitative material maps on a surgical sequence and a robotic manipulation sequence.</figcaption>
+    </figure>
+  </section>
+
+  <section class="band" id="simulation">
+    <div class="container">
+      <p class="kicker">Deformable simulation</p>
+      <h2>A spatial map stays closer to the annotated reference.</h2>
+      <p class="section-copy">Each comparison uses the same reconstructed geometry and applied force. Only the material assignment changes. Against a single global assignment, the dense map reduces nRMSE by 78.3% and EPE by 27.4%. The reference rollout uses the annotated material maps.</p>
+      <figure>
+        <img src="static/images/simulation_results_v1.png" alt="Simulation comparison of rendered deformation and optical flow for an annotated reference, a global material assignment, and the dense predicted map.">
+        <figcaption>Simulated deformation and optical flow when particle materials come from different maps.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="container" id="generation">
+    <p class="kicker">Video generation</p>
+    <h2>Depth and material maps improve fidelity and temporal consistency.</h2>
+    <p class="section-copy">On Cholec80-5k, PhysVerse is best on most reported metrics. Relative to the second-best baseline, Cosmos-H-Surgical, FVD, FID, and LPIPS drop by 12.7%, 4.3%, and 6.5%. On VLA-OS, PhysVerse is best on most metrics. Qualitatively, object geometry and appearance stay more stable across frames.</p>
+    <figure>
+      <img src="static/images/qualitative_gen_v1.png" alt="Qualitative video generation comparison on a surgical sequence and a robotic cloth sequence.">
+      <figcaption>Three consecutive frames from representative Cholec80-5k and VLA-OS sequences.</figcaption>
+    </figure>
+    <h3 class="subhead">Generated frames, reconstructed again</h3>
+    <p class="section-copy">Generated future frames are fed back into the frozen reconstructor. PhysVerse better preserves scene geometry and instrument structure, and the recovered material boundaries stay aligned with the reconstructed objects. These frames retain enough geometric and material information to rebuild a scene state for a later round of prediction and for initializing MPM.</p>
+    <figure>
+      <img src="static/images/feedback_v1.png" alt="Generated frames from several methods, reconstructed into Gaussian scenes and material maps.">
+      <figcaption>Generation feedback to reconstruction. The comparison is the reconstructed state, not an MPM rollout on future frames.</figcaption>
+    </figure>
+  </section>
+</main>
+<footer class="container footer">
+  <p>PhysVerse. Anonymous authors.</p>
+  <a href="#top">Back to top</a>
+</footer>
+</body>
+</html>
