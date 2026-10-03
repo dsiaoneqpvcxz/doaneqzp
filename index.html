@@ -38,25 +38,31 @@
 <main id="main">
   <section class="container lead-section" id="overview">
     <p class="kicker">Overview</p>
-    <h2>A scene state a soft-body simulator can advance.</h2>
-    <p class="lead">World models predict future observations, but the state they keep is usually geometric and visual. Soft-body simulation also needs spatially varying material parameters. PhysVerse reconstructs that state from monocular video and uses it for both future video prediction and MPM initialization.</p>
+    <h2>A shared scene state for prediction and soft-body simulation.</h2>
+    <p class="lead">PhysVerse turns monocular video into a 4D scene state with geometry and dense material maps, then uses that state for future video prediction and soft-body MPM.</p>
     <div class="cards">
       <article>
         <span>01</span>
         <h3>Shared 4D state</h3>
-        <p>Depth, dynamic Gaussian primitives, and dense maps of Young's modulus, Poisson's ratio, and density.</p>
+        <p>One scene state links reconstruction, video generation, and deformable simulation.</p>
       </article>
       <article>
         <span>02</span>
         <h3>Feed-forward materials</h3>
-        <p>A Physics head predicts <em>E</em>, <em>ν</em>, and <em>ρ</em> in one pass, together with the reconstructed geometry.</p>
+        <p>A Physics head predicts Young's modulus, Poisson's ratio, and density with geometry in a single pass.</p>
       </article>
       <article>
         <span>03</span>
         <h3>Conditioned generation</h3>
-        <p>The same depth and material maps condition a frozen video diffusion model for future frames.</p>
+        <p>The same depth and material maps condition a frozen video diffusion model.</p>
       </article>
     </div>
+    <figure>
+      <video controls playsinline preload="metadata">
+        <source src="static/videos/overview.mp4" type="video/mp4">
+      </video>
+      <figcaption>PhysVerse visualization: reconstructed state, material maps, deformable simulation, and conditioned future video.</figcaption>
+    </figure>
     <figure>
       <img src="static/images/taser_v2.png" alt="Comparison of scene reconstruction, video world models, and a simulation-ready world model that keeps depth, material maps, generation, and deformable simulation in one scene state.">
       <figcaption>PhysVerse keeps reconstruction, future video prediction, dense material maps, and deformable simulation on one scene state.</figcaption>
@@ -67,28 +73,11 @@
     <div class="container">
       <p class="kicker">Method</p>
       <h2>Reconstruct once. Predict and simulate from the same state.</h2>
-      <p class="section-copy">Given monocular video, a frozen reconstruction backbone and a Physics head produce geometry and dense material maps. Depth and material maps condition future video prediction. Geometry and materials initialize MPM particles. Generated frames can be passed back through the reconstructor to update the state.</p>
+      <p class="section-copy">From monocular video, a frozen reconstructor and a Physics head produce geometry and dense material maps. The same state conditions future video prediction, initializes MPM, and can be refreshed from generated frames.</p>
       <figure>
         <img src="static/images/overview_v4.png" alt="PhysVerse method overview: feed-forward reconstruction of Gaussians, depth, and material maps, a control branch for video generation, and MPM simulation.">
         <figcaption>Method overview. The reconstructed scene state conditions video generation and initializes deformable simulation.</figcaption>
       </figure>
-      <div class="steps">
-        <article>
-          <span>01</span>
-          <h3>Material prediction</h3>
-          <p>Semantic regions are assigned category-level reference values of <em>E</em>, <em>ν</em>, and <em>ρ</em>. The categories cover rigid materials, such as metal instruments, and deformable materials, such as soft tissue.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>Conditioned generation</h3>
-          <p>A lightweight control branch injects the predicted depth and material latents into a frozen video diffusion backbone.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>Simulation interface</h3>
-          <p>The same geometry and material maps are assigned to particles for MPM. This page does not show an MPM rollout on generated future frames.</p>
-        </article>
-      </div>
       <figure>
         <img src="static/images/dataset_v2.png" alt="Dataset curation: detection, semantic masks, and category-level maps of Young's modulus, Poisson's ratio, and density.">
         <figcaption>Material supervision is built by assigning a category-level triplet to semantic regions.</figcaption>

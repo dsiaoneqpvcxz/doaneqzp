@@ -209,14 +209,20 @@ h2 {
 .cards p,
 .steps p { margin: 0; color: #314038; }
 
-figure { margin: 0; }
+figure {
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
 
 figure + figure,
 .subhead { margin-top: 2.4rem; }
 
-img {
+img,
+video {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
   background: white;
   border: 1px solid var(--line);
