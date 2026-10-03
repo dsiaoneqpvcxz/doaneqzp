@@ -28,10 +28,10 @@
     <a class="wordmark" href="#top">PhysVerse</a>
     <div class="nav-links">
       <a href="#overview">Overview</a>
-      <a href="#method">Method</a>
       <a href="#materials">Materials</a>
-      <a href="#simulation">Simulation</a>
       <a href="#generation">Generation</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#method">Method</a>
     </div>
   </div>
 </nav>
@@ -58,7 +58,7 @@
       </article>
     </div>
     <figure>
-      <video controls playsinline preload="metadata">
+      <video controls muted playsinline loop preload="metadata" autoplay>
         <source src="static/videos/overview.mp4" type="video/mp4">
       </video>
       <figcaption>PhysVerse visualization: reconstructed state, material maps, deformable simulation, and conditioned future video.</figcaption>
@@ -69,37 +69,347 @@
     </figure>
   </section>
 
-  <section class="band" id="method">
+  <section class="band" id="materials">
     <div class="container">
-      <p class="kicker">Method</p>
-      <h2>Reconstruct once. Predict and simulate from the same state.</h2>
-      <p class="section-copy">From monocular video, a frozen reconstructor and a Physics head produce geometry and dense material maps. The same state conditions future video prediction, initializes MPM, and can be refreshed from generated frames.</p>
-      <figure>
-        <img src="static/images/overview_v4.png" alt="PhysVerse method overview: feed-forward reconstruction of Gaussians, depth, and material maps, a control branch for video generation, and MPM simulation.">
-        <figcaption>Method overview. The reconstructed scene state conditions video generation and initializes deformable simulation.</figcaption>
-      </figure>
-      <figure>
-        <img src="static/images/dataset_v2.png" alt="Dataset curation: detection, semantic masks, and category-level maps of Young's modulus, Poisson's ratio, and density.">
-        <figcaption>Material supervision is built by assigning a category-level triplet to semantic regions.</figcaption>
-      </figure>
+      <p class="kicker">Material maps</p>
+      <h2>From monocular RGB to geometry and materials.</h2>
+      <p class="section-copy">A single RGB video yields depth, dynamic Gaussians, and dense maps of Young's modulus, Poisson's ratio, and density—the material fields a soft-body simulator needs.</p>
+
+      <h3 class="subhead">Zero-shot surgical · Cutting</h3>
+      <div class="sync-row" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">RGB</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/rgb.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Depth</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/gs_depth.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Gaussian RGB</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/gs_rgb_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Young's modulus <em>E</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/pred_E_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Poisson's ratio <em>ν</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/pred_nu_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Density <em>ρ</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/cutting/pred_rho_far.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="sync-caption">Left to right: RGB, depth, Gaussian RGB, Young's modulus <em>E</em>, Poisson's ratio <em>ν</em>, and density <em>ρ</em>. Use Play to run the row in sync.</p>
+
+      <h3 class="subhead">Zero-shot surgical · Pulling</h3>
+      <div class="sync-row" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">RGB</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/rgb.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Depth</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/gs_depth.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Gaussian RGB</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/gs_rgb_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Young's modulus <em>E</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/pred_E_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Poisson's ratio <em>ν</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/pred_nu_far.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Density <em>ρ</em></span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/reconstruction/zero_shot_surgical/pulling/pred_rho_far.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="sync-caption">Left to right: RGB, depth, Gaussian RGB, Young's modulus <em>E</em>, Poisson's ratio <em>ν</em>, and density <em>ρ</em>. Use Play to run the row in sync.</p>
+
+      <h3 class="subhead">In-domain reconstruction</h3>
+      <p class="section-copy">Same outputs on robotic and surgical sequences: RGB with dense maps of Young's modulus <em>E</em>, Poisson's ratio <em>ν</em>, and density <em>ρ</em>.</p>
+
+      <div class="sync-grid-2x2">
+        <article class="sync-panel">
+          <h3 class="sync-subhead">Robotic · Fold</h3>
+          <div class="sync-row sync-row-4" data-sync-row>
+            <div class="sync-cell">
+              <span class="sync-label">RGB</span>
+              <video muted playsinline loop preload="auto" data-sync-master>
+                <source src="static/videos/reconstruction/fold_22/rgb.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Young's modulus <em>E</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/fold_22/pred_E.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/fold_22/colorbar_E.png" alt="Colorbar for Young's modulus">
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Poisson's ratio <em>ν</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/fold_22/pred_nu.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/fold_22/colorbar_nu.png" alt="Colorbar for Poisson's ratio">
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Density <em>ρ</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/fold_22/pred_rho.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/fold_22/colorbar_rho.png" alt="Colorbar for density">
+            </div>
+          </div>
+        </article>
+
+        <article class="sync-panel">
+          <h3 class="sync-subhead">Robotic · Rope</h3>
+          <div class="sync-row sync-row-4" data-sync-row>
+            <div class="sync-cell">
+              <span class="sync-label">RGB</span>
+              <video muted playsinline loop preload="auto" data-sync-master>
+                <source src="static/videos/reconstruction/rope_37/rgb.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Young's modulus <em>E</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/rope_37/pred_E.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/rope_37/colorbar_E.png" alt="Colorbar for Young's modulus">
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Poisson's ratio <em>ν</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/rope_37/pred_nu.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/rope_37/colorbar_nu.png" alt="Colorbar for Poisson's ratio">
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Density <em>ρ</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/rope_37/pred_rho.mp4" type="video/mp4">
+              </video>
+              <img class="sync-colorbar" src="static/videos/reconstruction/rope_37/colorbar_rho.png" alt="Colorbar for density">
+            </div>
+          </div>
+        </article>
+
+        <article class="sync-panel">
+          <h3 class="sync-subhead">Surgical · Sequence 01</h3>
+          <div class="sync-row sync-row-4" data-sync-row>
+            <div class="sync-cell">
+              <span class="sync-label">RGB</span>
+              <video muted playsinline loop preload="auto" data-sync-master>
+                <source src="static/videos/reconstruction/video01_14859/rgb.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Young's modulus <em>E</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video01_14859/pred_E.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Poisson's ratio <em>ν</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video01_14859/pred_nu.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Density <em>ρ</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video01_14859/pred_rho.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </article>
+
+        <article class="sync-panel">
+          <h3 class="sync-subhead">Surgical · Sequence 55</h3>
+          <div class="sync-row sync-row-4" data-sync-row>
+            <div class="sync-cell">
+              <span class="sync-label">RGB</span>
+              <video muted playsinline loop preload="auto" data-sync-master>
+                <source src="static/videos/reconstruction/video55_00588/rgb.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Young's modulus <em>E</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video55_00588/pred_E.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Poisson's ratio <em>ν</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video55_00588/pred_nu.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="sync-cell">
+              <span class="sync-label">Density <em>ρ</em></span>
+              <video muted playsinline loop preload="auto">
+                <source src="static/videos/reconstruction/video55_00588/pred_rho.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </article>
+      </div>
+      <p class="sync-caption">Each panel, left to right: RGB, Young's modulus <em>E</em>, Poisson's ratio <em>ν</em>, and density <em>ρ</em>. Use Play to run that panel in sync.</p>
     </div>
   </section>
 
-  <section class="container" id="materials">
-    <p class="kicker">Material maps</p>
-    <h2>Boundaries stay with the objects.</h2>
-    <p class="section-copy">Predicted maps remain aligned with moving objects. In surgical sequences, metal instruments receive higher Young's modulus and density, and lower Poisson's ratio, than surrounding soft tissue. Gallbladder and fat receive lower Young's modulus than muscle, following the category-level reference values. The same spatial alignment appears in robotic cloth manipulation.</p>
+  <section class="container" id="generation">
+    <p class="kicker">Video generation</p>
+    <h2>Physics-guided video generation.</h2>
+    <p class="section-copy">Predicted depth and material maps condition a frozen video diffusion model, so future frames follow the reconstructed geometry and physics of the scene.</p>
+
+      <h3 class="subhead">Robotic · Fold 49</h3>
+      <div class="sync-row sync-row-4" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">Wan2.2</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/generation/000007__fold__49__w000147__general_wan2.2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">SurgSora</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000007__fold__49__w000147__general_surgsora.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Cosmos</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000007__fold__49__w000147_cosmos.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label sync-label-ours">PhysVerse</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000007__fold__49__w000147__general_physverse.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <h3 class="subhead sync-subhead">Robotic · Fold 63</h3>
+      <div class="sync-row sync-row-4" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">Wan2.2</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/generation/000016__fold__63__w000098__general_wan2.2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">SurgSora</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000016__fold__63__w000098__general_surgsora.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Cosmos</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000016__fold__63__w000098_cosmos.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label sync-label-ours">PhysVerse</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000016__fold__63__w000098__general_physverse.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <h3 class="subhead sync-subhead">Surgical · Cholec80 video76</h3>
+      <div class="sync-row sync-row-3" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">SurgSora</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/generation/000023__Cholec80_5k_video76_part046__endo_surgsora.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Cosmos-Surgical</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000023__Cholec80_5k_video76_part046_cosmos_surgical.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label sync-label-ours">PhysVerse</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000023__Cholec80_5k_video76_part046__endo_physverse.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <h3 class="subhead sync-subhead">Surgical · Cholec80 video80</h3>
+      <div class="sync-row sync-row-3" data-sync-row>
+        <div class="sync-cell">
+          <span class="sync-label">SurgSora</span>
+          <video muted playsinline loop preload="auto" data-sync-master>
+            <source src="static/videos/generation/000048__Cholec80_5k_video80_part051__endo_surgsora.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label">Cosmos-Surgical</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000048__Cholec80_5k_video80_part051_cosmos_surgical.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
+          <span class="sync-label sync-label-ours">PhysVerse</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/generation/000048__Cholec80_5k_video80_part051__endo_physverse.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="sync-caption">Baselines versus PhysVerse on the same prompts. Use Play on a row to run that comparison in sync.</p>
+
+      <h3 class="subhead">Generated frames, reconstructed again</h3>
+      <p class="section-copy">Future frames are passed back through the frozen reconstructor. PhysVerse better preserves geometry and material boundaries, so the state can be reused for later prediction and MPM.</p>
     <figure>
-      <img src="static/images/material_head_time_v2.png" alt="Predicted Young's modulus, Poisson's ratio, and density over time for a surgical scene and a robotic cloth scene.">
-      <figcaption>Qualitative material maps on a surgical sequence and a robotic manipulation sequence.</figcaption>
+      <img src="static/images/feedback_v1.png" alt="Generated frames from several methods, reconstructed into Gaussian scenes and material maps.">
+      <figcaption>Generation feedback to reconstruction. The comparison is the reconstructed state, not an MPM rollout on future frames.</figcaption>
     </figure>
   </section>
 
   <section class="band" id="simulation">
     <div class="container">
       <p class="kicker">Deformable simulation</p>
-      <h2>A spatial map stays closer to the annotated reference.</h2>
-      <p class="section-copy">Each comparison uses the same reconstructed geometry and applied force. Only the material assignment changes. Against a single global assignment, the dense map reduces nRMSE by 78.3% and EPE by 27.4%. The reference rollout uses the annotated material maps.</p>
+      <h2>Dense material maps improve deformable rollout.</h2>
+      <p class="section-copy">With geometry and force fixed, only the material assignment changes. Dense maps stay closer to the annotated reference than a single global material.</p>
       <figure>
         <img src="static/images/simulation_results_v1.png" alt="Simulation comparison of rendered deformation and optical flow for an annotated reference, a global material assignment, and the dense predicted map.">
         <figcaption>Simulated deformation and optical flow when particle materials come from different maps.</figcaption>
@@ -107,19 +417,17 @@
     </div>
   </section>
 
-  <section class="container" id="generation">
-    <p class="kicker">Video generation</p>
-    <h2>Depth and material maps improve fidelity and temporal consistency.</h2>
-    <p class="section-copy">On Cholec80-5k, PhysVerse is best on most reported metrics. Relative to the second-best baseline, Cosmos-H-Surgical, FVD, FID, and LPIPS drop by 12.7%, 4.3%, and 6.5%. On VLA-OS, PhysVerse is best on most metrics. Qualitatively, object geometry and appearance stay more stable across frames.</p>
+  <section class="container" id="method">
+    <p class="kicker">Method</p>
+    <h2>Reconstruct once. Predict and simulate from the same state.</h2>
+    <p class="section-copy">From monocular video, a frozen reconstructor and a Physics head produce geometry and dense material maps. The same state conditions future video prediction, initializes MPM, and can be refreshed from generated frames.</p>
     <figure>
-      <img src="static/images/qualitative_gen_v1.png" alt="Qualitative video generation comparison on a surgical sequence and a robotic cloth sequence.">
-      <figcaption>Three consecutive frames from representative Cholec80-5k and VLA-OS sequences.</figcaption>
+      <img src="static/images/overview_v4.png" alt="PhysVerse method overview: feed-forward reconstruction of Gaussians, depth, and material maps, a control branch for video generation, and MPM simulation.">
+      <figcaption>Method overview. The reconstructed scene state conditions video generation and initializes deformable simulation.</figcaption>
     </figure>
-    <h3 class="subhead">Generated frames, reconstructed again</h3>
-    <p class="section-copy">Generated future frames are fed back into the frozen reconstructor. PhysVerse better preserves scene geometry and instrument structure, and the recovered material boundaries stay aligned with the reconstructed objects. These frames retain enough geometric and material information to rebuild a scene state for a later round of prediction and for initializing MPM.</p>
     <figure>
-      <img src="static/images/feedback_v1.png" alt="Generated frames from several methods, reconstructed into Gaussian scenes and material maps.">
-      <figcaption>Generation feedback to reconstruction. The comparison is the reconstructed state, not an MPM rollout on future frames.</figcaption>
+      <img src="static/images/dataset_v2.png" alt="Dataset curation: detection, semantic masks, and category-level maps of Young's modulus, Poisson's ratio, and density.">
+      <figcaption>Material supervision is built by assigning a category-level triplet to semantic regions.</figcaption>
     </figure>
   </section>
 </main>
