@@ -50,26 +50,72 @@ document.querySelectorAll("[data-sync-row]").forEach((row) => {
   if (!master || videos.length < 2) return;
 
   const followers = videos.filter((video) => video !== master);
+  const loose = row.hasAttribute("data-sync-loose");
   let userPaused = false;
   let visible = false;
+  let lastMasterTime = 0;
+
+  const atEnd = (video) =>
+    video.ended ||
+    (Number.isFinite(video.duration) &&
+      video.duration > 0 &&
+      video.currentTime >= video.duration - 0.08);
 
   videos.forEach((video) => {
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
-    video.loop = true;
     video.preload = "auto";
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
-    video.setAttribute("loop", "");
+    // Generation followers: no native loop (avoids black flash on wrap).
+    // Freeze at last frame until master loops, then restart together.
+    const shouldLoop = !loose || video === master;
+    video.loop = shouldLoop;
+    if (shouldLoop) video.setAttribute("loop", "");
+    else video.removeAttribute("loop");
   });
 
   const syncToMaster = (force = false) => {
+    const target = master.currentTime;
     for (const video of followers) {
-      if (force || Math.abs(video.currentTime - master.currentTime) > 0.12) {
-        try { video.currentTime = master.currentTime; } catch (_) {}
+      const maxT = Number.isFinite(video.duration) && video.duration > 0
+        ? Math.max(0, video.duration - 0.05)
+        : target;
+      const clamped = Math.min(target, maxT);
+      if (force || Math.abs(video.currentTime - clamped) > 0.35) {
+        try { video.currentTime = clamped; } catch (_) {}
       }
     }
+  };
+
+  const restartFollowers = () => {
+    followers.forEach((video) => {
+      try { video.currentTime = 0; } catch (_) {}
+      if (!master.paused && !userPaused) safePlay(video);
+    });
+  };
+
+  const playFollowers = () => {
+    followers.forEach((video) => {
+      if (loose) {
+        // Don't call play() while frozen at end — that restarts and flashes black.
+        if (atEnd(video)) {
+          if (master.currentTime < 0.25) {
+            try { video.currentTime = 0; } catch (_) {}
+            safePlay(video);
+          }
+          return;
+        }
+        safePlay(video);
+        return;
+      }
+      const maxT = Number.isFinite(video.duration) && video.duration > 0
+        ? Math.max(0, video.duration - 0.05)
+        : master.currentTime;
+      try { video.currentTime = Math.min(master.currentTime, maxT); } catch (_) {}
+      safePlay(video);
+    });
   };
 
   const setPlaying = (playing) => {
@@ -81,10 +127,7 @@ document.querySelectorAll("[data-sync-row]").forEach((row) => {
     userPaused = false;
     const start = () => {
       safePlay(master);
-      followers.forEach((video) => {
-        try { video.currentTime = master.currentTime; } catch (_) {}
-        safePlay(video);
-      });
+      playFollowers();
     };
 
     if (master.readyState >= 2) start();
@@ -114,10 +157,8 @@ document.querySelectorAll("[data-sync-row]").forEach((row) => {
 
   master.addEventListener("play", () => {
     setPlaying(true);
-    followers.forEach((video) => {
-      try { video.currentTime = master.currentTime; } catch (_) {}
-      safePlay(video);
-    });
+    if (!loose) syncToMaster(true);
+    playFollowers();
   });
 
   master.addEventListener("pause", () => {
@@ -125,8 +166,23 @@ document.querySelectorAll("[data-sync-row]").forEach((row) => {
     followers.forEach((video) => video.pause());
   });
 
-  master.addEventListener("seeked", () => syncToMaster(true));
-  master.addEventListener("timeupdate", () => syncToMaster(false));
+  if (!loose) {
+    master.addEventListener("seeked", () => syncToMaster(true));
+    master.addEventListener("timeupdate", () => syncToMaster(false));
+  } else {
+    // Detect master loop wrap → restart shorter followers together.
+    master.addEventListener("timeupdate", () => {
+      const t = master.currentTime;
+      if (lastMasterTime > 0.45 && t < 0.25) restartFollowers();
+      lastMasterTime = t;
+    });
+    followers.forEach((video) => {
+      video.addEventListener("ended", () => {
+        video.pause();
+      });
+    });
+  }
+
   master.addEventListener("ratechange", () => {
     followers.forEach((video) => { video.playbackRate = master.playbackRate; });
   });
