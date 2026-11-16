@@ -236,6 +236,10 @@ video {
   margin: 0.7rem 0 0;
 }
 
+.sync-row-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .sync-row-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
