@@ -419,23 +419,11 @@
         <figcaption>Real-time interactive deformable simulation.</figcaption>
       </figure>
       <h3 class="subhead">Simulation comparison</h3>
-      <div class="sync-row sync-row-5" data-sync-row>
+      <div class="sync-row sync-row-4" data-sync-row>
         <div class="sync-cell">
           <span class="sync-label">Ground truth</span>
           <video muted playsinline loop preload="auto" data-sync-master>
             <source src="static/videos/simulation/gt.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="sync-cell">
-          <span class="sync-label">DA3 + Physics Head</span>
-          <video muted playsinline loop preload="auto">
-            <source src="static/videos/simulation/da3.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="sync-cell">
-          <span class="sync-label">VGGT + Physics Head</span>
-          <video muted playsinline loop preload="auto">
-            <source src="static/videos/simulation/vggt.mp4" type="video/mp4">
           </video>
         </div>
         <div class="sync-cell">
@@ -445,13 +433,19 @@
           </video>
         </div>
         <div class="sync-cell">
+          <span class="sync-label">PhysGM</span>
+          <video muted playsinline loop preload="auto">
+            <source src="static/videos/simulation/physGM.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="sync-cell">
           <span class="sync-label sync-label-ours">PhysVerse</span>
           <video muted playsinline loop preload="auto">
             <source src="static/videos/simulation/physverse.mp4" type="video/mp4">
           </video>
         </div>
       </div>
-      <p class="sync-caption">Ground truth and simulation results from DA3 + Physics Head, VGGT + Physics Head, VOMP, and PhysVerse. Click any video or use the button to pause or resume all five together.</p>
+      <p class="sync-caption">Ground truth and simulation results from VOMP, PhysGM, and PhysVerse. Click any video or use the button to pause or resume all four together.</p>
       <figure>
         <img src="static/images/simulation_results_v1.png" alt="Simulation comparison of rendered deformation and optical flow for an annotated reference, a global material assignment, and the dense predicted map.">
         <figcaption>Simulated deformation and optical flow when particle materials come from different maps.</figcaption>
